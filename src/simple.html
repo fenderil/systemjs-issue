@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>systemjs-issue</title>
+    <meta charset="utf-8">
+    <script src="../node_modules/systemjs/dist/s.js"></script>
+    <script src="../node_modules/systemjs/dist/extras/amd.js"></script>
+    <script>
+        System.import('./fine1.js')
+            .then(module => {
+                console.log('loaded first fine script', module.default)
+
+                System.import('./error.js')
+                    .catch((error) => {
+                        console.log('loaded broken script', error)
+
+                        System.import('./fine2.js')
+                            .then((module) => {
+                                // not reachable
+
+                                console.log('loaded second fine script', module.default)
+                            })
+                            .catch((error) => {
+                                console.log('loaded second fine script (error from ./error.js)', error)
+
+                                console.log(System)
+                            })
+                    })
+            })
+    </script>
+</head>
+<body>
+</body>
+</html>

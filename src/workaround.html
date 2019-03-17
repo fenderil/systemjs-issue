@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>systemjs-issue</title>
+    <meta charset="utf-8">
+    <script src="../node_modules/systemjs/dist/system.js"></script>
+    <script src="../node_modules/systemjs/dist/extras/amd.js"></script>
+    <script>
+        System.import('./fine1.js')
+            .then(module => {
+                console.log('loaded first fine script', module.default)
+
+                System.import('./error.js')
+                    .catch((error) => {
+                        console.log('loaded broken script', error)
+
+                        // try to delete broken script
+                        const errorId = window
+                            .location
+                            .href
+                            .split('/')
+                            .slice(0, -1)
+                            .concat('error.js')
+                            .join('/')
+                        console.log('./error.js is deleted:', System.delete(errorId))
+
+                        System.import('./fine2.js')
+                            .catch((error) => {
+                                console.log('But I\'m still broken', error)
+                            })
+                    })
+            })
+    </script>
+</head>
+<body>
+</body>
+</html>
